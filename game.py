@@ -12,15 +12,13 @@ def game_turn():
     gui_p.start()
     while True:
         (row, col) = main_sock.recv()
-        print(row, end=' ')
-        print(col)
         if row == -2 and col == -2:         # Pipe closing message
             main_sock.close()
             break
         play_temp = play_board.place_disc(row, col, 1)
         if play_temp is None:
             print('Invalid Placement')
-            main_sock.send((-3, -3))
+            main_sock.send([-3])
             continue
         else:
             play_board = play_temp
@@ -31,8 +29,10 @@ def game_turn():
             print('AI Fail to Find Any Move')
             [white_counter, black_counter] = play_board.count_disc()
             if white_counter >= black_counter:
+                main_sock.send([-4])
                 print('User Wins')
             else:
+                main_sock.send([-5])
                 print('AI Wins')
             main_sock.send(play_board.get_board_all())
         else:
@@ -42,29 +42,5 @@ def game_turn():
     gui_p.join()
 
 
-def test():
-    play_board = board.Board()
-    play_board.display_board()
-    while True:
-        if not int(input('Do you want to continue? 0/1: ')):
-            break
-        argument = input('disc argument: ').split(',')
-        play_temp = play_board.place_disc(int(argument[0]), int(argument[1]), int(argument[2]))
-        if play_temp is None:
-            print('Invalid Placement')
-            continue
-        else:
-            play_board = play_temp
-            play_board.display_board()
-        print('AI\'s Move')
-        [value, row, col] = board_ai.alpha_beta_search(play_board, 3)
-        if row == -1:
-            print('AI Fail to Find Any Move')
-        else:
-            play_board = play_board.place_disc(row, col, -1)
-            play_board.display_board()
-
-
 if __name__ == '__main__':
     game_turn()
-   # test()
