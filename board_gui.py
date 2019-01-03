@@ -75,40 +75,49 @@ class GameBoard(tk.Frame):
         H5 = tk.Button(parent, height=5, width=12, command=lambda: click((7, 5)), bg="DodgerBlue2", anchor="sw")
         H6 = tk.Button(parent, height=5, width=12, command=lambda: click((7, 6)), bg="DodgerBlue3", anchor="sw")
         H7 = tk.Button(parent, height=5, width=12, command=lambda: click((7, 7)), bg="DodgerBlue2", anchor="sw")
-        buttons = {0: A0, 1: A1, 2: A2, 3: A3, 4: A4, 5: A5, 6: A6, 7: A7,
-                   8: B0, 9: B1, 10: B2, 11: B3, 12: B4, 13: B5, 14: B6, 15: B7,
-                   16: C0, 17: C1, 18: C2, 19: C3, 20: C4, 21: C5, 22: C6, 23: C7,
-                   24: D0, 25: D1, 26: D2, 27: D3, 28: D4, 29: D5, 30: D6, 31: D7,
-                   32: E0, 33: E1, 34: E2, 35: E3, 36: E4, 37: E5, 38: E6, 39: E7,
-                   40: F0, 41: F1, 42: F2, 43: F3, 44: F4, 45: F5, 46: F6, 47: F7,
-                   48: G0, 49: G1, 50: G2, 51: G3, 52: G4, 53: G5, 54: G6, 55: G7,
-                   56: H0, 57: H1, 58: H2, 59: H3, 60: H4, 61: H5, 62: H6, 63: H7
+        buttons = {0: [A0, 0], 1: [A1, 0], 2: [A2, 0], 3: [A3, 0], 4: [A4, 0], 5: [A5, 0], 6: [A6, 0], 7: [A7, 0],
+                   8: [B0, 0], 9: [B1, 0], 10: [B2, 0], 11: [B3, 0],  12: [B4, 0], 13: [B5, 0], 14: [B6, 0], 15: [B7, 0],
+                   16: [C0, 0], 17: [C1, 0], 18: [C2, 0], 19: [C3, 0], 20: [C4, 0], 21: [C5, 0], 22: [C6, 0], 23: [C7, 0],
+                   24: [D0, 0], 25: [D1, 0], 26: [D2, 0], 27: [D3, 0], 28: [D4, 0], 29: [D5, 0], 30: [D6, 0], 31: [D7, 0],
+                   32: [E0, 0], 33: [E1, 0], 34: [E2, 0], 35: [E3, 0], 36: [E4, 0], 37: [E5, 0], 38: [E6, 0], 39: [E7, 0],
+                   40: [F0, 0], 41: [F1, 0], 42: [F2, 0], 43: [F3, 0], 44: [F4, 0], 45: [F5, 0], 46: [F6, 0], 47: [F7, 0],
+                   48: [G0, 0], 49: [G1, 0], 50: [G2, 0], 51: [G3, 0], 52: [G4, 0], 53: [G5, 0], 54: [G6, 0], 55: [G7, 0],
+                   56: [H0, 0], 57: [H1, 0], 58: [H2, 0], 59: [H3, 0], 60: [H4, 0], 61: [H5, 0], 62: [H6, 0], 63: [H7, 0],
                    }
         for i in range(len(buttons)):
             r = int(i / 8)
             c = i % 8
-            buttons[i].grid(row=r, column=c)
-        del buttons[27]
-        del buttons[28]
-        del buttons[35]
-        del buttons[36]
+            buttons[i][0].grid(row=r, column=c)
+        buttons[27][1] = 1
+        buttons[28][1] = 1
+        buttons[35][1] = 1
+        buttons[36][1] = 1
 
         def click(coordinate):
-            user_coordinate = (-1, -1)
+            user_board = [-3]
             index = coordinate[0] * 8 + coordinate[1]
+            ending_flag = True
             print(coordinate)
-            if index in buttons:
+            if buttons[index][1] == 0:
                 gui_sock.send(coordinate)
                 user_board = gui_sock.recv()
-            if user_coordinate[0] != -3:
-                buttons[index].config(bg='white')
-                del buttons[index]
-                index = user_coordinate[0] * 8 + user_coordinate[1]
-                if index in buttons:
-                    buttons[index].config(bg='black')
-                    del buttons[index]
-                else:
-                    print('Error: Over-claiming Entry')
+            else:
+                print('Error: Over-claiming Entry')
+            time.sleep(1)
+            if user_board[0] != -3:
+                for index in range(len(user_board)):
+                    if user_board[index] == 1:
+                        buttons[index][0].config(bg='white')
+                        buttons[index][1] = 1
+                    elif user_board[index] == -1:
+                        buttons[index][0].config(bg='black')
+                        buttons[index][1] = 1
+                    else:
+                        ending_flag = False
+            else:
+                print('Error: Invalid Placement')
+            if ending_flag and user_board[0] != -3:
+                print('The winner is ...')
 
 
 def run_gui(gui_sock=None):

@@ -21,6 +21,7 @@ def game_turn():
         if play_temp is None:
             print('Invalid Placement')
             main_sock.send((-3, -3))
+            continue
         else:
             play_board = play_temp
             play_board.display_board()
@@ -28,11 +29,16 @@ def game_turn():
         [value, row, col] = board_ai.alpha_beta_search(play_board, 3)
         if row == -1:
             print('AI Fail to Find Any Move')
-            main_sock.send((-2, -2))
+            [white_counter, black_counter] = play_board.count_disc()
+            if white_counter >= black_counter:
+                print('User Wins')
+            else:
+                print('AI Wins')
+            main_sock.send(play_board.get_board_all())
         else:
             play_board = play_board.place_disc(row, col, -1)
             play_board.display_board()
-            main_sock.send((row, col))
+            main_sock.send(play_board.get_board_all())
     gui_p.join()
 
 

@@ -41,6 +41,8 @@ class Board:
                 else:
                     count = 0
                     break
+            if count == len(direction):
+                count = 0
             if count > 0:
                 flipped = True
             for i in range(count):
@@ -71,3 +73,10 @@ class Board:
 
     def get_board_entry(self, row, col):
         return self.board_array[row][col]
+
+    def get_board_all(self):
+        board_entries = []
+        for i in range(8):
+            for j in range(8):
+                board_entries.append(self.board_array[i][j])
+        return board_entries

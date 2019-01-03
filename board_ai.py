@@ -12,6 +12,11 @@ def alpha_beta_search(current_board, limit):
 
 
 def max_value(current_board, alpha, beta, limit):
+    result = ending_test(current_board)
+    if result == -1:
+        return [-100, -1, -1]
+    elif result == 1:
+        return [100, -1, -1]
     if limit == 0:
         return [evaluation(current_board), -1, -1]
     value = -100
@@ -27,8 +32,10 @@ def max_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
+            print('Max test: ' + str(r) + ' ' + str(c))
             [value_temp, rol_temp, col_temp] = min_value(new_board, alpha, beta, limit-1)
-            if value_temp > value:
+            print('Max value: ' + str(value_temp))
+            if value_temp >= value:
                 value = value_temp
                 row = r
                 col = c
@@ -39,6 +46,11 @@ def max_value(current_board, alpha, beta, limit):
 
 
 def min_value(current_board, alpha, beta, limit):
+    result = ending_test(current_board)
+    if result == -1:
+        return [-100, -1, -1]
+    elif result == 1:
+        return [100, -1, -1]
     if limit == 0:
         return [evaluation(current_board), -1, -1]
     value = 100
@@ -54,8 +66,10 @@ def min_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
+            print('Min test: ' + str(r) + ' ' + str(c))
             [value_temp, rol_temp, col_temp] = max_value(new_board, alpha, beta, limit-1)
-            if value_temp < value:
+            print('Min value: ' + str(value_temp))
+            if value_temp <= value:
                 value = value_temp
                 row = r
                 col = c
@@ -63,3 +77,14 @@ def min_value(current_board, alpha, beta, limit):
             return [value, row, col]
         beta = min(value, beta)
     return [value, row, col]
+
+
+def ending_test(current_board):
+    [white_counter, black_counter] = current_board.count_disc()
+    if white_counter + black_counter == 64:
+        if white_counter >= black_counter:
+            return 1
+        elif black_counter > white_counter:
+            return -1
+        else:
+            return 0
