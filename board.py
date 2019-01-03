@@ -17,9 +17,9 @@ class Board:
     def place_disc(self, row, col, color):
         """ This function change the entries of the board. """
         if not (8 > row >= 0 and 8 > col >= 0 and (color == 1 or color == -1)):
-            return False
+            return None
         if self.board_array[row][col] != 0:
-            return False
+            return None
         row_up = range(row + 1, 8)
         row_down = range(row - 1, -1, -1)
         row_self = [row for i in range(8)]
@@ -68,3 +68,6 @@ class Board:
                 elif self.board_array[i][j] == -1:
                     black_counter = black_counter + 1
         return [white_counter, black_counter]
+
+    def get_board_entry(self, row, col):
+        return self.board_array[row][col]

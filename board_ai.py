@@ -13,14 +13,14 @@ def alpha_beta_search(current_board, limit):
 
 def max_value(current_board, alpha, beta, limit):
     if limit == 0:
-        return evaluation(current_board)
+        return [evaluation(current_board), -1, -1]
     value = -100
     blank_space = []
     row = -1
     col = -1
     for i in range(8):
         for j in range(8):
-            if current_board[i][j] == 0:
+            if current_board.get_board_entry(i, j) == 0:
                 blank_space.append((i, j))
     for (r, c) in blank_space:
         new_board = current_board.place_disc(r, c, -1)
@@ -40,14 +40,14 @@ def max_value(current_board, alpha, beta, limit):
 
 def min_value(current_board, alpha, beta, limit):
     if limit == 0:
-        return evaluation(current_board)
+        return [evaluation(current_board), -1, -1]
     value = 100
     blank_space = []
     row = -1
     col = -1
     for i in range(8):
         for j in range(8):
-            if current_board[i][j] == 0:
+            if current_board.get_board_entry(i, j) == 0:
                 blank_space.append((i, j))
     for (r, c) in blank_space:
         new_board = current_board.place_disc(r, c, 1)
