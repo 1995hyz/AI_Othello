@@ -2,8 +2,17 @@ import board
 
 
 def evaluation(a_board):
+    position_weight = [[4, -3, 2, 2, 2, 2, -3, 4],
+                       [-3, -4, -1, -1, -1, -1, -4, -3],
+                       [2, -1, 1, 0, 0, 1, -1, 2],
+                       [2, -1, 0, 1, 1, 0, -1, 2],
+                       [2, -1, 0, 1, 1, 0, -1, 2],
+                       [2, -1, 1, 0, 0, 1, -1, 2],
+                       [-3, -4, -1, -1, -1, -1, -4, -3],
+                       [4, -3, 2, 2, 2, 2, -3, 4]
+                       ]
     [white_count, black_count] = a_board.count_disc()
-    return black_count * 0.1
+    return black_count * 0.2
 
 
 def alpha_beta_search(current_board, limit):
