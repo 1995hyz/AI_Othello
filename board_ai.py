@@ -2,17 +2,26 @@ import board
 
 
 def evaluation(a_board):
-    position_weight = [[4, -3, 2, 2, 2, 2, -3, 4],
-                       [-3, -4, -1, -1, -1, -1, -4, -3],
-                       [2, -1, 1, 0, 0, 1, -1, 2],
-                       [2, -1, 0, 1, 1, 0, -1, 2],
-                       [2, -1, 0, 1, 1, 0, -1, 2],
-                       [2, -1, 1, 0, 0, 1, -1, 2],
-                       [-3, -4, -1, -1, -1, -1, -4, -3],
-                       [4, -3, 2, 2, 2, 2, -3, 4]
+    position_weight = [[20, -2, 1, 0.5, 0.5, 1, -2, 20],
+                       [-2, -5, -0.2, -0.2, -0.2, -0.2, -5, -2],
+                       [1, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, 1],
+                       [0.5, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, 0.5],
+                       [0.5, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, 0.5],
+                       [1, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, 1],
+                       [-2, -5, -0.2, -0.2, -0.2, -0.2, -5, -2],
+                       [20, -2, 1, 0.5, 0.5, 1, -2, 20]
                        ]
-    [white_count, black_count] = a_board.count_disc()
-    return black_count * 0.2
+    position_sum = 0
+    # [white_count, black_count] = a_board.count_disc()
+    # availability = a_board.get_availability()
+    for i in range(8):
+        for j in range(8):
+            color = a_board.get_board_entry(i, j)
+            if color == -1:
+                position_sum = position_sum + position_weight[i][j]
+            elif color == 1:
+                position_sum = position_sum - position_weight[i][j]
+    return position_sum # + (black_count - white_count) * 0.5 #  + position_sum + availability
 
 
 def alpha_beta_search(current_board, limit):
@@ -41,9 +50,9 @@ def max_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
-            print('Max test: ' + str(r) + ' ' + str(c))
+            # print('Max test: ' + str(r) + ' ' + str(c))
             [value_temp, rol_temp, col_temp] = min_value(new_board, alpha, beta, limit-1)
-            print('Max value: ' + str(value_temp))
+            # print('Max value: ' + str(value_temp))
             if value_temp >= value:
                 value = value_temp
                 row = r
@@ -75,9 +84,9 @@ def min_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
-            print('Min test: ' + str(r) + ' ' + str(c))
+            # print('Min test: ' + str(r) + ' ' + str(c))
             [value_temp, rol_temp, col_temp] = max_value(new_board, alpha, beta, limit-1)
-            print('Min value: ' + str(value_temp))
+            # print('Min value: ' + str(value_temp))
             if value_temp <= value:
                 value = value_temp
                 row = r

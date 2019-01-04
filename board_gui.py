@@ -106,7 +106,6 @@ class GameBoard(tk.Frame):
             else:
                 print('Error: Over-claiming Entry')
                 return False
-            time.sleep(1)
             if user_board[0] == -4:
                 white_win = True
                 user_board = gui_sock.recv()

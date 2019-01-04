@@ -80,3 +80,13 @@ class Board:
             for j in range(8):
                 board_entries.append(self.board_array[i][j])
         return board_entries
+
+    def get_availability(self):
+        available_entry = 0
+        for i in range(8):
+            for j in range(8):
+                if self.get_board_entry(i, j) == 0:
+                    test_board = self.place_disc(i, j, 1)
+                    if test_board is not None:
+                        available_entry = available_entry + 1
+        return available_entry
