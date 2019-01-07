@@ -1,4 +1,5 @@
 import copy
+import log
 
 
 class Board:
@@ -57,8 +58,8 @@ class Board:
     def display_board(self):
         for i in range(8):
             for j in range(8):
-                print(self.board_array[i][j], end='  ')
-            print('')
+                log.custom_print((str(self.board_array[i][j]) + '  '))
+            log.custom_print('\n')
 
     def count_disc(self):
         white_counter = 0

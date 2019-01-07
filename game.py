@@ -3,6 +3,7 @@ import board_ai
 import board_gui
 import multiprocessing
 import time
+import log
 
 
 def iterative_DLS(current_board, init_limit, max_time):
@@ -13,8 +14,8 @@ def iterative_DLS(current_board, init_limit, max_time):
         start = time.clock()
         [value, rol, col] = board_ai.alpha_beta_search(current_board, limit)
         end = time.clock()
-        if max_time/2 > (end - start):
-            limit = limit + 1
+        if max_time/pow(2, (limit-2)) > (end - start):
+            limit = limit + 2
             if limit > 20:
                 return [value, rol, col]
             continue
@@ -24,7 +25,6 @@ def iterative_DLS(current_board, init_limit, max_time):
 
 def game_turn():
     play_board = board.Board()
-    # play_board.display_board()
     main_sock, gui_sock = multiprocessing.Pipe()
     gui_p = multiprocessing.Process(target=board_gui.run_gui, args=(gui_sock,))
     gui_p.start()
@@ -40,9 +40,10 @@ def game_turn():
             continue
         else:
             play_board = play_temp
-            # play_board.display_board()
+            play_board.display_board()
         # AI's Move
-        [value, row, col] = iterative_DLS(play_board, 3, 3)     # board_ai.alpha_beta_search(play_board, 3)
+        log.custom_print('AI\'s Move: \n')
+        [value, row, col] = iterative_DLS(play_board, 3, 10)     # board_ai.alpha_beta_search(play_board, 3)
         if row == -1:
             [white_counter, black_counter] = play_board.count_disc()
             if white_counter >= black_counter:
@@ -54,7 +55,7 @@ def game_turn():
             main_sock.send(play_board.get_board_all())
         else:
             play_board = play_board.place_disc(row, col, -1)
-            # play_board.display_board()
+            play_board.display_board()
             availability = play_board.get_availability()
             if availability == 0:
                 [white_counter, black_counter] = play_board.count_disc()
