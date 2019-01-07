@@ -1,5 +1,4 @@
 import board
-import log
 
 
 position_weight = [[15, -2, 1, 0.5, 0.5, 1, -2, 15],
@@ -51,13 +50,11 @@ def evaluation(a_board):
         return (max_sum + (black_count - white_count) * 0.1 + bonus_value) * 0.1 # + availability * 0.1
     else:
         # availability = a_board.get_availability()
-        return (max_sum + (black_count - white_count) * 0.1 + bonus_value) * 0.1 # + availability * 0.005
+        return (max_sum + (black_count - white_count) * 0.15 + bonus_value) * 0.1 # + availability * 0.005
 
 
 def alpha_beta_search(current_board, limit):
-    log.custom_print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$' + '\n')
     [value, row, col] = max_value(current_board, -100, 100, limit)
-    log.custom_print('Find Max: ' + str(value) + '\n')
     return [value, row, col]
 
 
@@ -82,11 +79,7 @@ def max_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
-            log.custom_print(('*************' + str(limit) + '****************' + '\n'))
-            log.custom_print(('Max test: ' + str(r) + ' ' + str(c) + '\n'))
-            current_board.display_board()
             [value_temp, rol_temp, col_temp] = min_value(new_board, alpha, beta, limit-1)
-            log.custom_print(('Max value: ' + str(r) + ' ' + str(c) + ' ' + str(value_temp) + '\n'))
             if value_temp >= value:
                 value = value_temp
                 row = r
@@ -118,10 +111,7 @@ def min_value(current_board, alpha, beta, limit):
         if new_board is None:
             continue
         else:
-            log.custom_print(('*************' + str(limit) + '****************' + '\n'))
-            log.custom_print(('Min test: ' + str(r) + ' ' + str(c) + '\n'))
             [value_temp, rol_temp, col_temp] = max_value(new_board, alpha, beta, limit-1)
-            log.custom_print(('Min value: ' + str(value_temp)) + '\n')
             if value_temp <= value:
                 value = value_temp
                 row = r

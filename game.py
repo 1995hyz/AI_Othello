@@ -3,7 +3,6 @@ import board_ai
 import board_gui
 import multiprocessing
 import time
-import log
 
 
 def iterative_DLS(current_board, init_limit, max_time):
@@ -40,22 +39,17 @@ def game_turn():
             continue
         else:
             play_board = play_temp
-            play_board.display_board()
         # AI's Move
-        log.custom_print('AI\'s Move: \n')
         [value, row, col] = iterative_DLS(play_board, 3, 10)     # board_ai.alpha_beta_search(play_board, 3)
         if row == -1:
             [white_counter, black_counter] = play_board.count_disc()
             if white_counter >= black_counter:
-                main_sock.send([-4])
-                print('User Wins')
+                main_sock.send([-4])    # User Wins
             else:
-                main_sock.send([-5])
-                print('AI Wins')
+                main_sock.send([-5])    # AI Wins
             main_sock.send(play_board.get_board_all())
         else:
             play_board = play_board.place_disc(row, col, -1)
-            play_board.display_board()
             availability = play_board.get_availability()
             if availability == 0:
                 [white_counter, black_counter] = play_board.count_disc()
