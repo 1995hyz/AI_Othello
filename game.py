@@ -15,7 +15,7 @@ def iterative_DLS(current_board, init_limit, max_time):
         end = time.clock()
         if max_time/pow(2, (limit-2)) > (end - start):
             limit = limit + 2
-            if limit > 20:
+            if limit > 5:
                 return [value, rol, col]
             continue
         else:

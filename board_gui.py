@@ -158,4 +158,3 @@ def run_gui(gui_sock=None):
 
 if __name__ == "__main__":
     run_gui()
-
