@@ -56,10 +56,27 @@ class Board:
             return None
 
     def display_board(self):
+        print("   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ")
         for i in range(8):
-            for j in range(8):
-                log.custom_print((str(self.board_array[i][j]) + '  '))
-            log.custom_print('\n')
+            print("----------------------------------")
+            print("     |   |   |   |   |   |   |   ")
+            print(str(i) + " ", end='')
+            for j in range(7):
+                if self.board_array[i][j] == 1:
+                    print(' % ', end='')
+                elif self.board_array[i][j] == -1:
+                    print(' $ ', end='')
+                else:
+                    print("   ", end='')
+                print('|', end='')
+            if self.board_array[i][7] == 1:
+                print(' % ')
+            elif self.board_array[i][7] == -1:
+                print(' $ ')
+            else:
+                print("   ")
+            print("     |   |   |   |   |   |   |   ")
+        print("----------------------------------")
 
     def count_disc(self):
         white_counter = 0
@@ -91,3 +108,17 @@ class Board:
                     if test_board is not None:
                         available_entry = available_entry + 1
         return available_entry
+
+    def get_tbd(self, color):
+        for i in range(8):
+            for j in range(8):
+                if self.board_array[i][j] != 0:
+                    continue
+                check_list = [(i-1, j-1), (i-1, j), (i-1, j+1),
+                              (i, j-1), (i, j+1),
+                              (i+1, j-1), (i+1, j), (i+1, j+1)]
+
+
+if __name__ == "__main__":
+    board = Board()
+    board.display_board()

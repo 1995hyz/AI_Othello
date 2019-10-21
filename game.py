@@ -24,9 +24,6 @@ def iterative_DLS(current_board, init_limit, max_time):
 
 def game_turn():
     play_board = board.Board()
-    main_sock, gui_sock = multiprocessing.Pipe()
-    gui_p = multiprocessing.Process(target=board_gui.run_gui, args=(gui_sock,))
-    gui_p.start()
     while True:
         (row, col) = main_sock.recv()
         if row == -2 and col == -2:         # Pipe closing message
@@ -62,4 +59,9 @@ def game_turn():
 
 
 if __name__ == '__main__':
+    player_1 = input("Will player1 be a computer? (Y/N)")
+    player_2 = input("Will player2 be a computer? (Y/N)")
+    history = input("Do you want to load a board from a file? (Y/N)")
+    if player_1 == 'Y':
+
     game_turn()
