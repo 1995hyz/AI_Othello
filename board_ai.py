@@ -1,8 +1,9 @@
 import board
 import time
 
+
 class AI:
-    def __init__(self):
+    def __init__(self, color):
         self.position_weight = [[4, -3, 2, 2, 2, 2, -3, 4],
                                 [-3, -4, -1, -1, -1, -1, -4, -3],
                                 [2, -1, 1, 0, 0, 1, -1, 2],
@@ -14,7 +15,8 @@ class AI:
                                 ]
 
         self.pattern_bonus = {(1, 1): -5, (-1, -1): 5}
-        self.name = "ai"
+        self.type = "ai"
+        self.color = color
 
     def bonus(self, a_board):
         bonus_value = 0
@@ -43,11 +45,12 @@ class AI:
         for i in range(8):
             for j in range(8):
                 color = a_board.get_board_entry(i, j)
-                if color == -1:
+                if color == self.color:
                     max_sum = max_sum + self.position_weight[i][j]
-                elif color == 1:
+                elif color == self.color:
                     max_sum = max_sum - self.position_weight[i][j]
-        bonus_value = self.bonus(a_board)
+        # bonus_value = self.bonus(a_board)
+        bonus_value = 0
         if white_count + black_count < 40:
             return (max_sum + (black_count - white_count) * 0.1 + bonus_value) * 0.1 # + availability * 0.1
         else:
@@ -59,7 +62,7 @@ class AI:
         return [value, row, col]
 
     def max_value(self, current_board, alpha, beta, limit):
-        result = self.ending_test(current_board)
+        result = current_board.ending_test()
         if result == -1:
             return [100, -1, -1]
         elif result == 1:
@@ -67,15 +70,11 @@ class AI:
         if limit == 0:
             return [self.evaluation(current_board), -1, -1]
         value = -100
-        blank_space = []
         row = -1
         col = -1
-        for i in range(8):
-            for j in range(8):
-                if current_board.get_board_entry(i, j) == 0:
-                    blank_space.append((i, j))
+        blank_space = current_board.get_availability(self.color)
         for (r, c) in blank_space:
-            new_board = current_board.place_disc(r, c, -1)
+            new_board = current_board.place_disc(r, c, self.color)
             if new_board is None:
                 continue
             else:
@@ -90,7 +89,7 @@ class AI:
         return [value, row, col]
 
     def min_value(self, current_board, alpha, beta, limit):
-        result = self.ending_test(current_board)
+        result = current_board.ending_test()
         if result == -1:
             return [100, -1, -1]
         elif result == 1:
@@ -98,15 +97,11 @@ class AI:
         if limit == 0:
             return [self.evaluation(current_board), -1, -1]
         value = 100
-        blank_space = []
         row = -1
         col = -1
-        for i in range(8):
-            for j in range(8):
-                if current_board.get_board_entry(i, j) == 0:
-                    blank_space.append((i, j))
+        blank_space = current_board.get_availability(self.color)
         for (r, c) in blank_space:
-            new_board = current_board.place_disc(r, c, 1)
+            new_board = current_board.place_disc(r, c, self.color * -1)
             if new_board is None:
                 continue
             else:
@@ -119,16 +114,6 @@ class AI:
                     return [value, row, col]
                 beta = min(value_temp, beta)
         return [value, row, col]
-
-    def ending_test(self, current_board):
-        [white_counter, black_counter] = current_board.count_disc()
-        if white_counter + black_counter == 64:
-            if white_counter >= black_counter:
-                return 1
-            else:
-                return -1
-        else:
-            return 0
 
     def iterative_dls(self, current_board, init_limit, max_time):
         start = 0

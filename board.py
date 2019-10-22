@@ -8,10 +8,10 @@ class Board:
         """ Initialize the board entries. """
         if array is None:
             self.board_array = [[0]*8 for x in range(8)]
-            self.board_array[3][3] = 1
-            self.board_array[4][4] = 1
-            self.board_array[3][4] = -1
-            self.board_array[4][3] = -1
+            self.board_array[3][3] = -1
+            self.board_array[4][4] = -1
+            self.board_array[3][4] = 1
+            self.board_array[4][3] = 1
         else:
             self.board_array = array
 
@@ -99,12 +99,12 @@ class Board:
                 board_entries.append(self.board_array[i][j])
         return board_entries
 
-    def get_availability(self):
+    def get_availability(self, color):
         available_entry = []
         for i in range(8):
             for j in range(8):
                 if self.get_board_entry(i, j) == 0:
-                    test_board = self.place_disc(i, j, 1)
+                    test_board = self.place_disc(i, j, color)
                     if test_board is not None:
                         available_entry.append((i, j))
         return available_entry
@@ -123,6 +123,16 @@ class Board:
                     check_pos = [(i+1, j+1), (i+1, j), (i, j+1)]
                 elif i == 0 and j == 7:
                     check_pos = [(i+1, j), (i, j-1), ]
+
+    def ending_test(self):
+        [white_counter, black_counter] = self.count_disc()
+        if white_counter + black_counter == 64:
+            if white_counter <= black_counter:
+                return 1
+            else:
+                return -1
+        else:
+            return 0
 
 
 if __name__ == "__main__":
