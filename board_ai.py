@@ -1,5 +1,5 @@
 import board
-
+import time
 
 class AI:
     def __init__(self):
@@ -14,6 +14,7 @@ class AI:
                                 ]
 
         self.pattern_bonus = {(1, 1): -5, (-1, -1): 5}
+        self.name = "ai"
 
     def bonus(self, a_board):
         bonus_value = 0
@@ -128,3 +129,17 @@ class AI:
                 return -1
         else:
             return 0
+
+    def iterative_dls(self, current_board, init_limit, max_time):
+        start = 0
+        end = 0
+        limit = init_limit
+        while True:
+            start = time.clock()
+            [value, rol, col] = self.alpha_beta_search(current_board, limit)
+            end = time.clock()
+            if max_time / pow(2, (limit - 2)) > (end - start):
+                limit = limit + 1
+                continue
+            else:
+                return [value, rol, col]

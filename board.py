@@ -100,23 +100,29 @@ class Board:
         return board_entries
 
     def get_availability(self):
-        available_entry = 0
+        available_entry = []
         for i in range(8):
             for j in range(8):
                 if self.get_board_entry(i, j) == 0:
                     test_board = self.place_disc(i, j, 1)
                     if test_board is not None:
-                        available_entry = available_entry + 1
+                        available_entry.append((i, j))
         return available_entry
 
     def get_tbd(self, color):
+        check_list = []
         for i in range(8):
             for j in range(8):
                 if self.board_array[i][j] != 0:
                     continue
-                check_list = [(i-1, j-1), (i-1, j), (i-1, j+1),
-                              (i, j-1), (i, j+1),
-                              (i+1, j-1), (i+1, j), (i+1, j+1)]
+                if 7 > i > 0 and 7 > j > 0:
+                    check_pos = [(i-1, j-1), (i-1, j), (i-1, j+1),
+                                 (i, j-1), (i, j+1),
+                                 (i+1, j-1), (i+1, j), (i+1, j+1)]
+                elif i == 0 and j == 0:
+                    check_pos = [(i+1, j+1), (i+1, j), (i, j+1)]
+                elif i == 0 and j == 7:
+                    check_pos = [(i+1, j), (i, j-1), ]
 
 
 if __name__ == "__main__":

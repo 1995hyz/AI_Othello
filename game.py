@@ -1,29 +1,24 @@
 import board
 import board_ai
+import board_human
 import board_gui
 import multiprocessing
 import time
 
+init_limit = 3
+max_time = 5
 
-def iterative_DLS(current_board, init_limit, max_time):
-    start = 0
-    end = 0
-    limit = init_limit
-    while True:
-        start = time.clock()
-        [value, rol, col] = board_ai.alpha_beta_search(current_board, limit)
-        end = time.clock()
-        if max_time/pow(2, (limit-2)) > (end - start):
-            limit = limit + 2
-            if limit > 5:
-                return [value, rol, col]
-            continue
-        else:
-            return [value, rol, col]
-
-
-def game_turn():
+def game_turn(player_one, player_two, board_load):
     play_board = board.Board()
+    while True:
+        if player_1.name == "human":
+            [value, row, col] = player_1.get_coordination()
+        else:
+            [value, row, col] = player_1.iterative_dls(play_board, init_limit, max_time)
+
+
+
+    """
     while True:
         (row, col) = main_sock.recv()
         if row == -2 and col == -2:         # Pipe closing message
@@ -55,13 +50,19 @@ def game_turn():
                 else:
                     main_sock.send([-5])
             main_sock.send(play_board.get_board_all())
-    gui_p.join()
+    gui_p.join()"""
 
 
 if __name__ == '__main__':
-    player_1 = input("Will player1 be a computer? (Y/N)")
-    player_2 = input("Will player2 be a computer? (Y/N)")
+    select_1 = input("Will player1 be a computer? (Y/N)")
+    select_2 = input("Will player2 be a computer? (Y/N)")
     history = input("Do you want to load a board from a file? (Y/N)")
-    if player_1 == 'Y':
-
+    if select_1 == 'Y':
+        player_1 = board_ai.AI()
+    else:
+        player_1 = board_human.Human()
+    if select_2 == 'Y':
+        player_2 = board_ai.AI()
+    else:
+        player_2 = board_human.Human()
     game_turn()
