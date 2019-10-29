@@ -134,6 +134,27 @@ class Board:
         else:
             return 0
 
+    @staticmethod
+    def load_board(file_path):
+        board_load = []
+        with open(file_path, mode='r') as file:
+            for i in range(8):
+                row_str = file.readline()[:-1]
+                row = [int(x) for x in row_str.split(' ')]
+                board_load.append(row)
+        return board_load
+
+    def save_board(self, file_path="board.txt"):
+        with open(file_path, mode='w+') as file:
+            output_str = ""
+            for i in range(8):
+                line_str = ""
+                for j in range(7):
+                    line_str += (str(self.board_array[i][j]) + ",")
+                line_str += (str(self.board_array[i][7]) + "\n")
+                output_str += line_str
+            file.write(output_str)
+
 
 if __name__ == "__main__":
     board = Board()

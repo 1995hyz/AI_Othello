@@ -127,4 +127,4 @@ class AI:
                 limit = limit + 1
                 continue
             else:
-                return [value, rol, col]
+                return [value, rol, col, limit]

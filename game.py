@@ -33,7 +33,9 @@ def game_turn(player_one, player_two, board_load=None):
             if player_one.type == "human":
                 [value, row, col] = player_one.get_coordination(available_move)
             else:
-                [value, row, col] = player_one.iterative_dls(play_board, init_limit, max_time)
+                [value, row, col, depth] = player_one.iterative_dls(play_board, init_limit, max_time)
+                print("Completed search on depth " + str(depth))
+                print("The chosen move is (" + str(row) + ", " + str(col) + ")")
             play_board = play_board.place_disc(row, col, player_one.color)
             play_board.display_board()
             counter += 1
@@ -48,7 +50,9 @@ def game_turn(player_one, player_two, board_load=None):
             if player_two.type == "human":
                 [value, row, col] = player_two.get_coordination(available_move)
             else:
-                [value, row, col] = player_two.iterative_dls(play_board, init_limit, max_time)
+                [value, row, col, depth] = player_two.iterative_dls(play_board, init_limit, max_time)
+                print("Completed search on depth " + str(depth))
+                print("The chosen move is (" + str(row) + ", " + str(col) + ")")
             play_board = play_board.place_disc(row, col, player_two.color)
             play_board.display_board()
             counter += 1
@@ -56,41 +60,9 @@ def game_turn(player_one, player_two, board_load=None):
                 result = play_board.ending_test()
                 print(result)
                 break
-
-
-    """
-    while True:
-        (row, col) = main_sock.recv()
-        if row == -2 and col == -2:         # Pipe closing message
-            main_sock.close()
-            break
-        play_temp = play_board.place_disc(row, col, 1)
-        if play_temp is None:
-            print('Invalid Placement')
-            main_sock.send([-3])
-            continue
-        else:
-            play_board = play_temp
-        # AI's Move
-        [value, row, col] = iterative_DLS(play_board, 3, 10)     # board_ai.alpha_beta_search(play_board, 3)
-        if row == -1:
-            [white_counter, black_counter] = play_board.count_disc()
-            if white_counter >= black_counter:
-                main_sock.send([-4])    # User Wins
-            else:
-                main_sock.send([-5])    # AI Wins
-            main_sock.send(play_board.get_board_all())
-        else:
-            play_board = play_board.place_disc(row, col, -1)
-            availability = play_board.get_availability()
-            if availability == 0:
-                [white_counter, black_counter] = play_board.count_disc()
-                if white_counter >= black_counter:
-                    main_sock.send([-4])
-                else:
-                    main_sock.send([-5])
-            main_sock.send(play_board.get_board_all())
-    gui_p.join()"""
+        save_opt = input("Would you like to save the board? (Y/N) ")
+        if save_opt == 'Y':
+            play_board.save_board("board.txt")
 
 
 if __name__ == '__main__':
