@@ -77,4 +77,9 @@ if __name__ == '__main__':
         player_2 = board_ai.AI(color=-1)
     else:
         player_2 = board_human.Human(color=-1, name="player2")
-    game_turn(player_1, player_2)
+    if history == 'Y':
+        board_path = input("Please input the path of the board file: ")
+        board_load = board.Board.load_board(board_path)
+        game_turn(player_1, player_2, board_load=board_load)
+    else:
+        game_turn(player_1, player_2)

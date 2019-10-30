@@ -56,6 +56,10 @@ class Board:
             return None
 
     def display_board(self):
+        print("Current Board:")
+        print("Player 1 is %")
+        print("Player 2 is $")
+        print("\n")
         print("   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ")
         for i in range(8):
             print("----------------------------------")
@@ -140,9 +144,9 @@ class Board:
         with open(file_path, mode='r') as file:
             for i in range(8):
                 row_str = file.readline()[:-1]
-                row = [int(x) for x in row_str.split(' ')]
+                row = [int(x) for x in row_str.split(',')]
                 board_load.append(row)
-        return board_load
+        return Board(board_load)
 
     def save_board(self, file_path="board.txt"):
         with open(file_path, mode='w+') as file:
