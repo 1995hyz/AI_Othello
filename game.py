@@ -5,7 +5,7 @@ import board_gui
 import multiprocessing
 import time
 
-init_limit = 3
+init_limit = 6
 max_time = 5
 
 
@@ -33,7 +33,10 @@ def game_turn(player_one, player_two, board_load=None):
             if player_one.type == "human":
                 [value, row, col] = player_one.get_coordination(available_move)
             else:
+                start = time.clock()
                 [value, row, col, depth] = player_one.iterative_dls(play_board, init_limit, max_time)
+                end = time.clock()
+                print("Searching time " + str(end-start) + " sec")
                 print("Completed search on depth " + str(depth))
                 print("The chosen move is (" + str(row) + ", " + str(col) + ")")
             play_board = play_board.place_disc(row, col, player_one.color)
@@ -50,7 +53,10 @@ def game_turn(player_one, player_two, board_load=None):
             if player_two.type == "human":
                 [value, row, col] = player_two.get_coordination(available_move)
             else:
+                start = time.clock()
                 [value, row, col, depth] = player_two.iterative_dls(play_board, init_limit, max_time)
+                end = time.clock()
+                print("Searching time " + str(end-start) + " sec")
                 print("Completed search on depth " + str(depth))
                 print("The chosen move is (" + str(row) + ", " + str(col) + ")")
             play_board = play_board.place_disc(row, col, player_two.color)

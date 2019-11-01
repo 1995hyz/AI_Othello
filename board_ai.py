@@ -17,7 +17,12 @@ class AI:
         self.pattern_bonus = {(1, 1): -5, (-1, -1): 5}
         self.type = "ai"
         self.color = color
+        if color == 1:
+            self.index = [0, 1]
+        else:
+            self.index = [1, 0]
 
+    """
     def bonus(self, a_board):
         bonus_value = 0
         pattern0 = (a_board.get_board_entry(0, 0), a_board.get_board_entry(0, 1))
@@ -38,10 +43,12 @@ class AI:
             if x in self.pattern_bonus:
                 bonus_value = bonus_value + self.pattern_bonus[x]
         return bonus_value
+        """
 
     def evaluation(self, a_board):
         max_sum = 0
-        [white_count, black_count] = a_board.count_disc()
+        # [white_count, black_count] = a_board.count_disc()
+        disc = a_board.count_disc()
         for i in range(8):
             for j in range(8):
                 color = a_board.get_board_entry(i, j)
@@ -51,11 +58,12 @@ class AI:
                     max_sum = max_sum - self.position_weight[i][j]
         # bonus_value = self.bonus(a_board)
         bonus_value = 0
-        if white_count + black_count < 40:
-            return (max_sum + (black_count - white_count) * 0.1 + bonus_value) * 0.1 # + availability * 0.1
+        if disc[0] + disc[1] < 40:
+            availability = a_board.get_availability(color=self.color)
+            return (max_sum + (disc[self.index[0]] - disc[self.index[1]]) * 0.1 + bonus_value) * 0.1 + len(availability) * 0.1
         else:
             # availability = a_board.get_availability()
-            return (max_sum + (black_count - white_count) * 0.15 + bonus_value) * 0.1 # + availability * 0.005
+            return (max_sum + (disc[self.index[0]] - disc[self.index[1]]) * 0.15 + bonus_value) * 0.1   # + availability * 0.005
 
     def alpha_beta_search(self, current_board, limit):
         [value, row, col] = self.max_value(current_board, -100, 100, limit)
@@ -99,7 +107,7 @@ class AI:
         value = 100
         row = -1
         col = -1
-        blank_space = current_board.get_availability(self.color)
+        blank_space = current_board.get_availability(self.color * -1)
         for (r, c) in blank_space:
             new_board = current_board.place_disc(r, c, self.color * -1)
             if new_board is None:
@@ -116,8 +124,6 @@ class AI:
         return [value, row, col]
 
     def iterative_dls(self, current_board, init_limit, max_time):
-        start = 0
-        end = 0
         limit = init_limit
         while True:
             start = time.clock()

@@ -1,5 +1,7 @@
 import copy
-import log
+import time
+
+counter = 0
 
 
 class Board:
@@ -14,8 +16,11 @@ class Board:
             self.board_array[4][3] = 1
         else:
             self.board_array = array
+        # self.availability_1 = self.cal_availability(color=1)
+        # self.availability_2 = self.cal_availability(color=-1)
 
     def place_disc(self, row, col, color):
+        global counter
         """ This function change the entries of the board. """
         if not (8 > row >= 0 and 8 > col >= 0 and (color == 1 or color == -1)):
             return None
@@ -27,11 +32,21 @@ class Board:
         col_up = range(col + 1, 8)
         col_down = range(col - 1, -1, -1)
         col_self = [col for i in range(8)]
+
+        # start = time.clock()
+
         directions = [list(zip(row_up, col_down)), list(zip(row_up, col_self)), list(zip(row_up, col_up)),
                       list(zip(row_down, col_down)), list(zip(row_self, col_down)), list(zip(row_self, col_up)),
                       list(zip(row_down, col_self)), list(zip(row_down, col_up))]
+
         board_temp = copy.deepcopy(self.board_array)
+        # end = time.clock()
+        # print(str(counter) + "  " + str(end-start))
+        counter += 1
         flipped = False
+
+        start = time.clock()
+
         for direction in directions:
             count = 0
             for (row_num, col_num) in direction:
@@ -49,11 +64,48 @@ class Board:
             for i in range(count):
                 (row_num, col_num) = direction[i]
                 board_temp[row_num][col_num] = color
+
+        end = time.clock()
+        # print(str(counter) + "  " + str(end - start))
+
         if flipped:
             board_temp[row][col] = color
             return Board(board_temp)
         else:
             return None
+
+    def check_disc(self, row, col, color):
+        """ This function change the entries of the board. """
+        if not (8 > row >= 0 and 8 > col >= 0 and (color == 1 or color == -1)):
+            return None
+        if self.board_array[row][col] != 0:
+            return None
+        row_up = range(row + 1, 8)
+        row_down = range(row - 1, -1, -1)
+        row_self = [row for i in range(8)]
+        col_up = range(col + 1, 8)
+        col_down = range(col - 1, -1, -1)
+        col_self = [col for i in range(8)]
+
+        directions = [list(zip(row_up, col_down)), list(zip(row_up, col_self)), list(zip(row_up, col_up)),
+                      list(zip(row_down, col_down)), list(zip(row_self, col_down)), list(zip(row_self, col_up)),
+                      list(zip(row_down, col_self)), list(zip(row_down, col_up))]
+
+        for direction in directions:
+            count = 0
+            for (row_num, col_num) in direction:
+                if self.board_array[row_num][col_num] == -1 * color:
+                    count = count + 1
+                elif self.board_array[row_num][col_num] == color:
+                    break
+                else:
+                    count = 0
+                    break
+            if count == len(direction):
+                count = 0
+            if count > 0:
+                return True
+        return False
 
     def display_board(self):
         print("Current Board:")
@@ -108,10 +160,22 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.get_board_entry(i, j) == 0:
+                    """
                     test_board = self.place_disc(i, j, color)
                     if test_board is not None:
                         available_entry.append((i, j))
+                    """
+                    test_board = self.check_disc(i, j, color)
+                    if test_board:
+                        available_entry.append((i, j))
         return available_entry
+
+        """
+        if color == 1:
+            return self.availability_1
+        else:
+            return self.availability_2
+        """
 
     def get_tbd(self, color):
         check_list = []
@@ -158,6 +222,17 @@ class Board:
                 line_str += (str(self.board_array[i][7]) + "\n")
                 output_str += line_str
             file.write(output_str)
+    """
+    def cal_availability(self, color):
+        available_entry = []
+        for i in range(8):
+            for j in range(8):
+                if self.get_board_entry(i, j) == 0:
+                    test_board = self.place_disc(i, j, color)
+                    if test_board is not None:
+                        available_entry.append((i, j))
+        return available_entry
+    """
 
 
 if __name__ == "__main__":
