@@ -48,7 +48,7 @@ bool Board::place_disc(int row, int col, int color, Board *board_temp) {
             {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}
     };*/
     vector<vector <int>> row_n;
-    for (int i = 0; i < row; i++) {
+    for (int i = row - 1; i >= 0; i--) {
         // row_n[i][0] = i;
         // row_n[i][1] = col;
         vector<int> temp {i, col};
@@ -61,7 +61,7 @@ bool Board::place_disc(int row, int col, int color, Board *board_temp) {
     for (int i = 0; i < 8; i++) {
         int r_temp = row - i - 1;
         int c_temp = col - i - 1;
-        if ( r_temp > 7 || c_temp < 0) {
+        if ( r_temp < 7 || c_temp < 0) {
             break;
         }
         //row_nw[i][0] = r_temp;
@@ -88,7 +88,7 @@ bool Board::place_disc(int row, int col, int color, Board *board_temp) {
             {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}
     };*/
     vector<vector<int>> row_w;
-    for (int i = 0; i < col; i++) {
+    for (int i = col-1; i >= 0; i--) {
         //row_w[i][0] = row;
         //row_w[i][1] = i;
         vector<int> temp {row, i};
@@ -119,9 +119,9 @@ bool Board::place_disc(int row, int col, int color, Board *board_temp) {
     };*/
     vector<vector<int>> row_sw;
     for (int i = 0; i < 8; i++) {
-        int row_temp = row + 1;
-        int col_temp = col - 1;
-        if ( row_temp > 8 || col_temp < 0) {
+        int row_temp = row + 1 + i;
+        int col_temp = col - 1 + i;
+        if ( row_temp > 7 || col_temp < 0) {
             break;
         }
         //row_sw[i][0] = row_temp;
@@ -134,9 +134,9 @@ bool Board::place_disc(int row, int col, int color, Board *board_temp) {
     };*/
     vector<vector<int>> row_se;
     for (int i = 0; i < 8; i++) {
-        int row_temp = row + 1;
-        int col_temp = col + 1;
-        if ( row_temp > 8 || col_temp > 8) {
+        int row_temp = row + 1 + i;
+        int col_temp = col + 1 + i;
+        if ( row_temp > 7 || col_temp > 7) {
             break;
         }
         //row_se[i][0] = row_temp;
@@ -212,7 +212,7 @@ bool Board::check_disc(int row, int col, int color) {
             {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}
     };*/
     vector<vector <int>> row_n;
-    for (int i = 0; i < row; i++) {
+    for (int i = row - 1; i >= 0; i--) {
         // row_n[i][0] = i;
         // row_n[i][1] = col;
         vector<int> temp {i, col};
@@ -225,7 +225,7 @@ bool Board::check_disc(int row, int col, int color) {
     for (int i = 0; i < 8; i++) {
         int r_temp = row - i - 1;
         int c_temp = col - i - 1;
-        if ( r_temp > 7 || c_temp < 0) {
+        if ( r_temp < 0 || c_temp < 0) {
             break;
         }
         //row_nw[i][0] = r_temp;
@@ -252,7 +252,7 @@ bool Board::check_disc(int row, int col, int color) {
             {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}
     };*/
     vector<vector<int>> row_w;
-    for (int i = 0; i < col; i++) {
+    for (int i = col - 1; i >= 0; i--) {
         //row_w[i][0] = row;
         //row_w[i][1] = i;
         vector<int> temp {row, i};
@@ -283,9 +283,9 @@ bool Board::check_disc(int row, int col, int color) {
     };*/
     vector<vector<int>> row_sw;
     for (int i = 0; i < 8; i++) {
-        int row_temp = row + 1;
-        int col_temp = col - 1;
-        if ( row_temp > 8 || col_temp < 0) {
+        int row_temp = row + 1 + i;
+        int col_temp = col - 1 - i;
+        if ( row_temp > 7 || col_temp < 0) {
             break;
         }
         //row_sw[i][0] = row_temp;
@@ -298,9 +298,9 @@ bool Board::check_disc(int row, int col, int color) {
     };*/
     vector<vector<int>> row_se;
     for (int i = 0; i < 8; i++) {
-        int row_temp = row + 1;
-        int col_temp = col + 1;
-        if ( row_temp > 8 || col_temp > 8) {
+        int row_temp = row + 1 + i;
+        int col_temp = col + 1 + i;
+        if ( row_temp > 7 || col_temp > 7) {
             break;
         }
         //row_se[i][0] = row_temp;
@@ -404,6 +404,9 @@ void Board::set_availability() {
             if (board_array[i][j] == 0) {
                 bool test_board_white = check_disc(i, j, 1);
                 bool test_board_black = check_disc(i, j, -1);
+
+                bool test_board_white2 = check_disc(4, 5, 1);
+
                 if (test_board_white) {
                     vector <int> avail_while { i, j };
                     availability_white.push_back(avail_while);
@@ -468,4 +471,6 @@ void Board::initializer() {
     set_board_entry(4, 4, -1);
     set_board_entry(3, 4, 1);
     set_board_entry(4, 3, 1);
+    set_availability();
+    set_disc_num();
 }

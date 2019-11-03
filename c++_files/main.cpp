@@ -6,12 +6,12 @@
 
 using namespace std;
 
-int init_limit = 6;
+int init_limit = 16;
 int max_time = 5;
 
 void print_legal_move(vector<vector<int>> available_move) {
     if (! available_move.empty()) {
-        cout<<"The legal moves are: ";
+        cout<<"The legal moves are:"<<endl;
         for (int i = 0; i < available_move.size(); i++) {
             cout<<"Move: " << "(" << available_move[i][0] << ", "<< available_move[i][1] << ")"<<endl;
         }
@@ -27,7 +27,8 @@ void game_turn(Player *player1, Player *player2, Board *play_board) {
         vector<vector<int>> available_move = play_board->get_availability(player1->getColor());
         cout<<"Player1 to move."<<endl;
         print_legal_move(available_move);
-        int row, col, value;
+        int row, col;
+        float value;
         if(! available_move.empty()) {
             if (!player1->getType()) {
                 auto *player_one = dynamic_cast<Human *>(player1);
@@ -45,7 +46,11 @@ void game_turn(Player *player1, Player *player2, Board *play_board) {
                 cout<<"Completed search on depth "<<endl;
                 cout<<"The chosen move is (" << place.row << ", " << place.col << ")" << endl;
             }
-            play_board->place_disc(row, col, player1->getColor());
+            Board temp_board = Board();
+            play_board->place_disc(row, col, player1->getColor(), play_board);
+            //play_board = &temp_board;
+            play_board->set_availability();
+            play_board->set_disc_num();
             play_board->display_board();
             counter ++;
             if (counter == 60) {
@@ -54,13 +59,13 @@ void game_turn(Player *player1, Player *player2, Board *play_board) {
                 break;
             }
         }
-        available_move= play_board->get_availability(player2->getColor());
+        vector<vector<int>> available_move_2 = play_board->get_availability(player2->getColor());
         cout<<"Player2 to move."<<endl;
-        print_legal_move(available_move);
-        if(! available_move.empty()) {
+        print_legal_move(available_move_2);
+        if(! available_move_2.empty()) {
             if (!player2->getType()) {
                 auto *player_two = dynamic_cast<Human *>(player2);
-                struct placement place = player_two->get_coordination(available_move);
+                struct placement place = player_two->get_coordination(available_move_2);
                 row = place.row;
                 col = place.col;
                 value = place.value;
@@ -74,7 +79,11 @@ void game_turn(Player *player1, Player *player2, Board *play_board) {
                 cout<<"Completed search on depth "<<endl;
                 cout<<"The chosen move is (" << place.row << ", " << place.col << ")" << endl;
             }
-            play_board->place_disc(row, col, player2->getColor());
+            Board board_temp = Board();
+            play_board->place_disc(row, col, player2->getColor(), play_board);
+            //play_board = &board_temp;
+            play_board->set_availability();
+            play_board->set_disc_num();
             play_board->display_board();
             counter ++;
             if (counter == 60) {

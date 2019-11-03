@@ -238,3 +238,5 @@ class Board:
 if __name__ == "__main__":
     board = Board()
     board.display_board()
+
+    board.check_disc(4, 5, 1)

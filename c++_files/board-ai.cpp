@@ -136,12 +136,14 @@ struct placement AI::alpha_beta_search(Board *current_board, int limit) {
 
 struct placement AI::iterative_dls(Board *current_board, int init_limit, int max_time) {
     int limit = init_limit;
+    auto start = chrono::high_resolution_clock::now();
     while (true) {
-        auto start = chrono::high_resolution_clock::now();
         struct placement newReturn = alpha_beta_search(current_board, limit);
         auto end = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::seconds>(end - start);
-        if (max_time / pow(2, (limit - 2)) > duration.count()) {
+        auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+        cout<<"***Search Time: "<<duration.count()<<endl;
+        cout<<"***Limit: "<<limit<<endl;
+        if (max_time * 5000 / pow(2, (limit - 2)) > duration.count()) {
             limit = limit + 2;
             continue;
         } else {
