@@ -7,37 +7,7 @@
 #include <vector>
 #include <iostream>
 
-#define NUM_ROW 8
-#define NUM_COLUMN 8
-
 using namespace std;
-
-class Board {
-    private:
-        int board_array[NUM_ROW][NUM_COLUMN] = {
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0}
-        };
-        vector<vector<int>> availability_white;
-        vector<vector<int>> availability_black;
-    public:
-        Board();
-        Board(int *board_pointer);
-        ~Board();
-
-    Board place_disc(int row, int col, int color);
-    bool check_disc(int row, int col, int color);
-    void display_board();
-    int *count_disc();
-    vector<vector<int>> get_availability(int color);
-    void set_availability(int color);
-};
 
 Board::Board(int *board_pointer) {
     for ( int i=0; i < NUM_ROW; i++) {
@@ -46,6 +16,8 @@ Board::Board(int *board_pointer) {
             board_pointer ++;
         }
     }
+    set_availability();
+    set_disc_num();
 }
 
 Board::Board() {
@@ -54,21 +26,23 @@ Board::Board() {
             board_array[i][j] = 0;
         }
     }*/
+    /*
     board_array[3][3] = -1;
     board_array[4][4] = -1;
     board_array[3][4] = 1;
     board_array[4][3] = 1;
+    */
 }
 
 Board::~Board() {
 }
 
-Board Board::place_disc(int row, int col, int color) {
+bool Board::place_disc(int row, int col, int color, Board *board_temp) {
     if (!(8 > row && row >= 0 && 8 > col && col >= 0 && ( color == 1 || color == -1))) {
-        return nullptr;
+        return false;
     }
     if (board_array[row][col] != 0) {
-        return nullptr;
+        return false;
     }
     /*int row_n[8][2] = {
             {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}
@@ -179,10 +153,10 @@ Board Board::place_disc(int row, int col, int color) {
             &row_e[0][0], &row_s[0][0], &row_sw[0][0], &row_se[0][0]
     };*/
     int *board_curr = &board_array[0][0];
-    int board_temp[NUM_ROW][NUM_COLUMN];
+    // int board_temp[NUM_ROW][NUM_COLUMN];
     for ( int i=0; i < NUM_ROW; i++) {
         for ( int j=0; j < NUM_COLUMN; j++) {
-            board_temp[i][j] = *board_curr;
+            board_temp->board_array[i][j] = *board_curr;
             board_curr ++;
         }
     }
@@ -215,15 +189,15 @@ Board Board::place_disc(int row, int col, int color) {
         for ( int j = 0; j < count; j++) {
             int row_num = direction[j][0];
             int col_num = direction[j][1];
-            board_temp[row_num][col_num] = color;
+            board_temp->board_array[row_num][col_num] = color;
         }
     }
     if (flipped) {
-        board_temp[row][col] = color;
-        return Board(&board_temp[0][0]);
+        board_temp->board_array[row][col] = color;
+        return true;
     }
     else {
-        return nullptr;
+        return false;
     }
 }
 
@@ -416,10 +390,82 @@ int * Board::count_disc() {
     return &disc_counter[0];
 }
 
-vector<vector<int>> Board::get_availability(int color) {
-    if (color == 1) {
+vector<vector<int>> Board::get_availability(int disc_color) {
+    if (disc_color == 1) {
         return availability_white;
-    } else if {
+    } else {
         return availability_black;
     }
+}
+
+void Board::set_availability() {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board_array[i][j] == 0) {
+                bool test_board_white = check_disc(i, j, 1);
+                bool test_board_black = check_disc(i, j, -1);
+                if (test_board_white) {
+                    vector <int> avail_while { i, j };
+                    availability_white.push_back(avail_while);
+                }
+                if (test_board_black) {
+                    vector <int> avail_black { i, j };
+                    availability_black.push_back(avail_black);
+                }
+            }
+        }
+    }
+}
+
+void Board::set_disc_num() {
+    int white_num = 0;
+    int black_num = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board_array[i][j] == 1) {
+                white_num ++;
+            } else if (board_array[i][j] == -1) {
+                black_num ++;
+            }
+        }
+    }
+    white_disc = white_num;
+    black_disc = black_num;
+}
+
+int Board::get_black_num() {
+    return white_disc;
+}
+
+int Board::get_while_num() {
+    return black_disc;
+}
+
+int Board::ending_test() {
+    int white_num = get_while_num();
+    int black_num = get_black_num();
+    if ((white_num + black_num) == 64) {
+        if (white_num >= black_num) {
+            return 1;
+        } else {
+            return -1;
+        }
+    } else {
+        return 0;
+    }
+}
+
+int Board::get_board_entry(int row, int col) {
+    return board_array[row][col];
+}
+
+void Board::set_board_entry(int row, int col, int disc_color) {
+    board_array[row][col] = disc_color;
+}
+
+void Board::initializer() {
+    set_board_entry(3, 3, -1);
+    set_board_entry(4, 4, -1);
+    set_board_entry(3, 4, 1);
+    set_board_entry(4, 3, 1);
 }

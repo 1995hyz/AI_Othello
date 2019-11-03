@@ -54,7 +54,7 @@ class AI:
                 color = a_board.get_board_entry(i, j)
                 if color == self.color:
                     max_sum = max_sum + self.position_weight[i][j]
-                elif color == self.color:
+                elif color == self.color * -1:
                     max_sum = max_sum - self.position_weight[i][j]
         # bonus_value = self.bonus(a_board)
         bonus_value = 0
