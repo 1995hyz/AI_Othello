@@ -1,8 +1,6 @@
 import board
 import board_ai
 import board_human
-import board_gui
-import multiprocessing
 import time
 
 init_limit = 4
@@ -45,7 +43,20 @@ def game_turn(player_one, player_two, board_load=None):
             counter += 1
             if counter == 60:
                 result = play_board.ending_test()
-                print(result)
+                if result == 1:
+                    [player1_disc, player2_disc] = play_board.count_disc()
+                    print("Final score of player 1: " + str(player1_disc))
+                    print("Final score of player 2: " + str(player2_disc))
+                    print("Player 1 wins.")
+                elif result == -1:
+                    [player1_disc, player2_disc] = play_board.count_disc()
+                    print("Final score of player 1: " + str(player1_disc))
+                    print("Final score of player 2: " + str(player2_disc))
+                    print("Player 2 wins.")
+                else:
+                    print("Final score of player 1: 32")
+                    print("Final score of player 2: 32")
+                    print("Players have a tie.")
                 break
         available_move = play_board.get_availability(player_2.color)
         print("Player2 to move.")
@@ -65,7 +76,20 @@ def game_turn(player_one, player_two, board_load=None):
             counter += 1
             if counter == 60:
                 result = play_board.ending_test()
-                print(result)
+                if result == 1:
+                    [player1_disc, player2_disc] = play_board.count_disc()
+                    print("Final score of player 1: " + str(player1_disc))
+                    print("Final score of player 2: " + str(player2_disc))
+                    print("Player 1 wins.")
+                elif result == -1:
+                    [player1_disc, player2_disc] = play_board.count_disc()
+                    print("Final score of player 1: " + str(player1_disc))
+                    print("Final score of player 2: " + str(player2_disc))
+                    print("Player 2 wins.")
+                else:
+                    print("Final score of player 1: 32")
+                    print("Final score of player 2: 32")
+                    print("Players have a tie.")
                 break
         save_opt = input("Would you like to save the board? (Y/N) ")
         if save_opt == 'Y':
@@ -76,6 +100,7 @@ if __name__ == '__main__':
     select_1 = input("Will player1 be a computer? (Y/N)")
     select_2 = input("Will player2 be a computer? (Y/N)")
     history = input("Do you want to load a board from a file? (Y/N)")
+    max_time = int(input("Enter a time limit in seconds (10 - 60)"))
     if select_1 == 'Y':
         player_1 = board_ai.AI(color=1)
     else:

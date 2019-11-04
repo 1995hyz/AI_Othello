@@ -16,8 +16,6 @@ class Board:
             self.board_array[4][3] = 1
         else:
             self.board_array = array
-        # self.availability_1 = self.cal_availability(color=1)
-        # self.availability_2 = self.cal_availability(color=-1)
 
     def place_disc(self, row, col, color):
         global counter
@@ -32,21 +30,13 @@ class Board:
         col_up = range(col + 1, 8)
         col_down = range(col - 1, -1, -1)
         col_self = [col for i in range(8)]
-
-        # start = time.clock()
-
         directions = [list(zip(row_up, col_down)), list(zip(row_up, col_self)), list(zip(row_up, col_up)),
                       list(zip(row_down, col_down)), list(zip(row_self, col_down)), list(zip(row_self, col_up)),
                       list(zip(row_down, col_self)), list(zip(row_down, col_up))]
 
         board_temp = copy.deepcopy(self.board_array)
-        # end = time.clock()
-        # print(str(counter) + "  " + str(end-start))
         counter += 1
         flipped = False
-
-        start = time.clock()
-
         for direction in directions:
             count = 0
             for (row_num, col_num) in direction:
@@ -64,10 +54,6 @@ class Board:
             for i in range(count):
                 (row_num, col_num) = direction[i]
                 board_temp[row_num][col_num] = color
-
-        end = time.clock()
-        # print(str(counter) + "  " + str(end - start))
-
         if flipped:
             board_temp[row][col] = color
             return Board(board_temp)
@@ -160,38 +146,20 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.get_board_entry(i, j) == 0:
-                    """
-                    test_board = self.place_disc(i, j, color)
-                    if test_board is not None:
-                        available_entry.append((i, j))
-                    """
                     test_board = self.check_disc(i, j, color)
                     if test_board:
                         available_entry.append((i, j))
         return available_entry
-
-    def get_tbd(self, color):
-        check_list = []
-        for i in range(8):
-            for j in range(8):
-                if self.board_array[i][j] != 0:
-                    continue
-                if 7 > i > 0 and 7 > j > 0:
-                    check_pos = [(i-1, j-1), (i-1, j), (i-1, j+1),
-                                 (i, j-1), (i, j+1),
-                                 (i+1, j-1), (i+1, j), (i+1, j+1)]
-                elif i == 0 and j == 0:
-                    check_pos = [(i+1, j+1), (i+1, j), (i, j+1)]
-                elif i == 0 and j == 7:
-                    check_pos = [(i+1, j), (i, j-1), ]
 
     def ending_test(self):
         [white_counter, black_counter] = self.count_disc()
         if white_counter + black_counter == 64:
             if white_counter > black_counter:
                 return 1
-            else:
+            elif white_counter < black_counter:
                 return -1
+            else:
+                return -2
         else:
             return 0
 

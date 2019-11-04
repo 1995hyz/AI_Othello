@@ -2,7 +2,7 @@ import board
 import time
 
 pos_inf = 10000
-neg_inf = 10000
+neg_inf = -10000
 
 
 class AI:
@@ -25,56 +25,7 @@ class AI:
         else:
             self.index = [1, 0]
 
-    """
-    def bonus(self, a_board):
-        bonus_value = 0
-        pattern0 = (a_board.get_board_entry(0, 0), a_board.get_board_entry(0, 1))
-        pattern1 = (a_board.get_board_entry(0, 0), a_board.get_board_entry(1, 0))
-        pattern2 = (a_board.get_board_entry(7, 7), a_board.get_board_entry(7, 6))
-        pattern3 = (a_board.get_board_entry(7, 7), a_board.get_board_entry(6, 7))
-        pattern4 = (a_board.get_board_entry(7, 0), a_board.get_board_entry(7, 1))
-        pattern5 = (a_board.get_board_entry(7, 0), a_board.get_board_entry(6, 0))
-        pattern6 = (a_board.get_board_entry(0, 7), a_board.get_board_entry(0, 6))
-        pattern7 = (a_board.get_board_entry(0, 7), a_board.get_board_entry(1, 7))
-        pattern8 = (a_board.get_board_entry(0, 0), a_board.get_board_entry(1, 1))
-        pattern9 = (a_board.get_board_entry(0, 7), a_board.get_board_entry(1, 6))
-        pattern10 = (a_board.get_board_entry(7, 7), a_board.get_board_entry(6, 6))
-        pattern11 = (a_board.get_board_entry(7, 0), a_board.get_board_entry(6, 1))
-        patterns = [pattern0, pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7,
-                    pattern8, pattern9, pattern10, pattern11]
-        for x in patterns:
-            if x in self.pattern_bonus:
-                bonus_value = bonus_value + self.pattern_bonus[x]
-        return bonus_value
-        """
-
     def evaluation(self, a_board):
-        """
-        max_sum = 0
-        # [white_count, black_count] = a_board.count_disc()
-        disc = a_board.count_disc()
-        for i in range(8):
-            for j in range(8):
-                color = a_board.get_board_entry(i, j)
-                if color == self.color:
-                    max_sum = max_sum + self.position_weight[i][j]
-                elif color == self.color * -1:
-                    max_sum = max_sum - self.position_weight[i][j]
-        # bonus_value = self.bonus(a_board)
-        bonus_value = 0
-        if disc[0] + disc[1] < 16:
-            availability = a_board.get_availability(color=self.color)
-            counter_availability = a_board.get_availability(color=self.color * -1)
-            return (max_sum + (disc[self.index[0]] - disc[self.index[1]]) * 0.1 + bonus_value) * 0.1 + (len(availability) - len(counter_availability)) * 0.2
-        elif 16 <= disc[0] + disc[1] < 32:
-            availability = a_board.get_availability(color=self.color)
-            counter_availability = a_board.get_availability(color=self.color * -1)
-            return (max_sum + (disc[self.index[0]] - disc[self.index[1]]) * 0.1 + bonus_value) * 0.2 + (len(availability) - len(counter_availability)) * 0.05
-        else:
-            # availability = a_board.get_availability()
-            return (max_sum + (disc[self.index[0]] - disc[self.index[1]]) * 0.15 + bonus_value) * 0.2   # + availability * 0.005
-        """
-
         max_sum = 0
         my_disc = 0
         opp_disc = 0
@@ -110,10 +61,11 @@ class AI:
                             else:
                                 opp_front_tiles += 1
                             break
+        total_disc = my_disc + opp_disc
         if my_disc > opp_disc:
-            piece_diff = (100 * my_disc) / (my_disc + opp_disc)
+            piece_diff = (100 * my_disc) / total_disc
         elif my_disc < opp_disc:
-            piece_diff = -(100*opp_disc) / (my_disc + opp_disc)
+            piece_diff = -(100*opp_disc) / total_disc
         else:
             piece_diff = 0
         if my_front_tiles > opp_front_tiles:
@@ -147,8 +99,71 @@ class AI:
         corner_occ = 25 * (my_disc - opp_disc)
 
         my_disc = opp_disc = 0
-
-
+        if color_00 == 0:
+            color = a_board.get_board_entry(0, 1)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(1, 1)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(1, 0)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+        if color_07 == 0:
+            color = a_board.get_board_entry(0, 6)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(1, 6)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(1, 7)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+        if color_70 == 0:
+            color = a_board.get_board_entry(7, 1)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(6, 1)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(6, 0)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+        if color_77 == 0:
+            color = a_board.get_board_entry(6, 7)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(6, 6)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+            color = a_board.get_board_entry(7, 6)
+            if color == self.color:
+                my_disc += 1
+            elif color == self.color * -1:
+                opp_disc += 1
+        corner_close = -12.5 * (my_disc - opp_disc)
 
         my_disc = len(a_board.get_availability(color=self.color))
         opp_disc = len(a_board.get_availability(color=self.color*-1))
@@ -159,10 +174,10 @@ class AI:
         else:
             mobility = 0
 
-        return (10 * piece_diff + 802 * corner_occ + 79 * mobility + 75 * frontier + 10 * max_sum) * 0.0001
-
-
-
+        if total_disc < 50:
+            return (10 * piece_diff + 802 * corner_occ + 382*corner_close + 79 * mobility + 75 * frontier + 10 * max_sum) * 0.00001
+        else:
+            return (200 * piece_diff + 802 * corner_occ + 382*corner_close + 79 * mobility + 75 * frontier + 10 * max_sum) * 0.00001
 
     def alpha_beta_search(self, current_board, limit, max_time):
         [value, row, col] = self.max_value(current_board, neg_inf, pos_inf, limit, max_time)
@@ -174,7 +189,7 @@ class AI:
         loop_start = time.clock()
         remaining_time = max_time
         result = current_board.ending_test()
-        if result == -1:
+        if result == -1 or result == -2:
             return [pos_inf, -1, -1]
         elif result == 1:
             return [neg_inf, -1, -1]
@@ -193,10 +208,6 @@ class AI:
                 continue
             else:
                 [value_temp, rol_temp, col_temp] = self.min_value(new_board, alpha, beta, limit-1, remaining_time)
-
-                if limit == 5:
-                    print([value_temp, row, col])
-
                 if value_temp == -20000:
                     return [-20000, -1, -1]
                 if value_temp >= value:
@@ -216,7 +227,7 @@ class AI:
         loop_start = time.clock()
         remaining_time = max_time
         result = current_board.ending_test()
-        if result == -1:
+        if result == -1 or result == -2:
             return [pos_inf, -1, -1]
         elif result == 1:
             return [neg_inf, -1, -1]
@@ -257,15 +268,11 @@ class AI:
         while True:
             start = time.clock()
             [value, row, col] = self.alpha_beta_search(current_board, limit, remaining_time)
-
-            print("*****" + str(value) + "*****")
-
             end = time.clock()
             remaining_time = remaining_time - (end - start)
             if value == pos_inf or value == neg_inf:
                 return [value, row, col, limit]
-
-            if value == -20000:   # max_time / pow(2, (limit - 2)) > (end - start):
+            if value > -10000:   # max_time / pow(2, (limit - 2)) > (end - start):
                 value_temp = value
                 row_temp = row
                 col_temp = col
