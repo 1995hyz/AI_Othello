@@ -105,16 +105,16 @@ class Board:
             print(str(i) + " ", end='')
             for j in range(7):
                 if self.board_array[i][j] == 1:
-                    print(' % ', end='')
+                    print("\033[96m{}\033[00m".format(' % '), end='')
                 elif self.board_array[i][j] == -1:
-                    print(' $ ', end='')
+                    print("\033[92m{}\033[00m".format(' $ '), end='')
                 else:
                     print("   ", end='')
                 print('|', end='')
             if self.board_array[i][7] == 1:
-                print(' % ')
+                print("\033[96m{}\033[00m".format(' % '))
             elif self.board_array[i][7] == -1:
-                print(' $ ')
+                print("\033[92m{}\033[00m".format(' $ '))
             else:
                 print("   ")
             print("     |   |   |   |   |   |   |   ")
