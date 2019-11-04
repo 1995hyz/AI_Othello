@@ -5,8 +5,8 @@ import board_gui
 import multiprocessing
 import time
 
-init_limit = 6
-max_time = 5
+init_limit = 4
+max_time = 10
 
 
 def print_legal_move(available_move):
@@ -22,6 +22,7 @@ def game_turn(player_one, player_two, board_load=None):
     counter = 0
     if board_load:
         play_board = board_load
+        counter = sum(play_board.count_disc()) - 4
     else:
         play_board = board.Board()
     play_board.display_board()

@@ -170,13 +170,6 @@ class Board:
                         available_entry.append((i, j))
         return available_entry
 
-        """
-        if color == 1:
-            return self.availability_1
-        else:
-            return self.availability_2
-        """
-
     def get_tbd(self, color):
         check_list = []
         for i in range(8):
@@ -195,7 +188,7 @@ class Board:
     def ending_test(self):
         [white_counter, black_counter] = self.count_disc()
         if white_counter + black_counter == 64:
-            if white_counter <= black_counter:
+            if white_counter > black_counter:
                 return 1
             else:
                 return -1
@@ -222,21 +215,8 @@ class Board:
                 line_str += (str(self.board_array[i][7]) + "\n")
                 output_str += line_str
             file.write(output_str)
-    """
-    def cal_availability(self, color):
-        available_entry = []
-        for i in range(8):
-            for j in range(8):
-                if self.get_board_entry(i, j) == 0:
-                    test_board = self.place_disc(i, j, color)
-                    if test_board is not None:
-                        available_entry.append((i, j))
-        return available_entry
-    """
 
 
 if __name__ == "__main__":
     board = Board()
     board.display_board()
-
-    board.check_disc(4, 5, 1)
