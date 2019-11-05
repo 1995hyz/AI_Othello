@@ -160,6 +160,10 @@ class Board:
                 return -1
             else:
                 return -2
+        elif white_counter == 0:
+            return -1
+        elif black_counter == 0:
+            return 1
         else:
             return 0
 
@@ -183,8 +187,3 @@ class Board:
                 line_str += (str(self.board_array[i][7]) + "\n")
                 output_str += line_str
             file.write(output_str)
-
-
-if __name__ == "__main__":
-    board = Board()
-    board.display_board()
